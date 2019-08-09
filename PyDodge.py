@@ -15,19 +15,24 @@ HEIGHT = 600
 RED = 246, 114, 128
 BLUE = 63, 130, 153
 BG_COLOR = 244, 217, 187
+FNT_COLOR = 189, 113, 68#250, 152, 90
 
 player_size = 50
 player_pos = [(WIDTH / 2) - player_size, HEIGHT - (2 * player_size)]
 enemy_size = 50
 enemy_pos = [random.randint(0, WIDTH - enemy_size), 0]  # for random int, use library see IMPORT 3
 enemy_list = [enemy_pos]
-enemy_speed = 4
+enemy_speed = 10
 # DECLARE CLOCK TO SET FRAME RATE
 CLOCK = pygame.time.Clock()
 # CREATE A SCREEN
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 game_over = False
+score = 0
+pyFont = pygame.font.SysFont("Century Gothic", 35)
+pyFont2 = pygame.font.SysFont("Century Gothic", 15)
+
 
 
 # ~ END OF VARIABLES
@@ -49,7 +54,9 @@ def detect_collision(player_pos, enemy_pos):
 
 # FUNCTION 2: MULTIPLYING ENEMIES
 def enemies_fall(enemy_list):
-    if len(enemy_list) < 10:
+    # adding a delay, so the enemies fall randomly
+    delay = random.random()
+    if len(enemy_list) < 10 and delay < 0.1:  # NUMBER OF ENEMIES AND DELAY BETWEEN THEM
         x_pos = random.randint(0, WIDTH - enemy_size)
         y_pos = 0
         enemy_list.append([x_pos, y_pos])
@@ -62,12 +69,14 @@ def create_enemies(enemy_list):
 
 
 # FUNCTION 4: UPDATE ENEMY POSITIONS
-def update_enemy_pos(enemy_list):
+def update_enemy_pos(enemy_list, score):
     for idx, enemy_pos in enumerate(enemy_list):
         if 0 <= enemy_pos[1] < HEIGHT:
             enemy_pos[1] += enemy_speed
         else:
             enemy_list.pop(idx)
+            score += 1
+    return score
 
 
 # FUNCTION 5: COLLISION CHECK
@@ -110,7 +119,20 @@ while not game_over:
 
     # UPDATING MULTIPLE ENEMY POSITION AND APPLYING THEIR COLLISION
     enemies_fall(enemy_list)
-    update_enemy_pos(enemy_list)
+    score = update_enemy_pos(enemy_list, score)
+
+    text = "Score: {}".format(score)
+    label = pyFont.render(text, 1, FNT_COLOR)
+    screen.blit(label,(WIDTH-193, HEIGHT-52))
+
+    text2 = "PyDodge"
+    label2 = pyFont.render(text2, 1, FNT_COLOR)
+    screen.blit(label2, (40, HEIGHT-52))
+
+    text2 = "github.com/RyhanSunny"
+    label2 = pyFont2.render(text2, 1, FNT_COLOR)
+    screen.blit(label2, (WIDTH/2-85, HEIGHT - 31))
+
     if collision_check(enemy_list, player_pos):
         game_over = True
 
@@ -133,7 +155,7 @@ while not game_over:
     # ~ignore~
 
     # SETTING FRAME RATE
-    CLOCK.tick(120)
+    CLOCK.tick(30)
     # WE NEED TO UPDATE OUR SCREEN EVERY ITERATION
     pygame.display.update()
 
