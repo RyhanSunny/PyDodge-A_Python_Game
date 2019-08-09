@@ -1,14 +1,14 @@
-# FIRST WE HAVE TO INSTALL PyGame ON CMD USING:
-# pip install pygame AND FOLLOW SUNNY ON IG ;) (@notyour_sunshine_) ABSOLUTELY MANDATORY :P LOL JK
-# IMPORT PYGAME LIBRARY
+# FIRST WE HAVE TO INSTALL PyGame USING CMD: pip install pygame
+# AND THEN WE HAVE TO FOLLOW ME ON IG ;) (@notyour_sunshine_)
+# NOW IMPORT PYGAME LIBRARY
 import pygame
-import sys  # IMPORT [2]
-import random  # IMPORT 3
+import sys  # IMPORT [2] : SYSTEM
+import random  # IMPORT [3] : RANDOMIZE
 
-# INITIALIZE PYGAME
+# INITIATE PyGame
 pygame.init()
 
-# VARIABLES USED BELOW
+# ~ ALL THE VARIABLES GO HERE:
 WIDTH = 800
 HEIGHT = 600
 
@@ -18,23 +18,22 @@ BG_COLOR = 244, 217, 187
 
 player_size = 50
 player_pos = [(WIDTH / 2) - player_size, HEIGHT - (2 * player_size)]
-
 enemy_size = 50
 enemy_pos = [random.randint(0, WIDTH - enemy_size), 0]  # for random int, use library see IMPORT 3
-
+enemy_list = [enemy_pos]
 enemy_speed = 4
-
+# DECLARE CLOCK TO SET FRAME RATE
 CLOCK = pygame.time.Clock()
 # CREATE A SCREEN
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# OK NEXT WE DEVELOP OUR GAME LOOP SO BASICALLY > KEEP GAME RUNNING -WHILE- GAME NOT OVER
-# NOTE PYGAME IS AN EVENT BASED LIBRARY
-# SO WE'RE GONNA HAVE A FOR LOOP INSIDE THE WHILE LOOP THAT WILL TRACK ALL OF OUR EVENTS
-
 game_over = False
 
 
+# ~ END OF VARIABLES
+
+
+# ~ ALL OUR FUNCTIONS GO HERE:
 # FUNCTION 1: DETECTING COLLISION
 def detect_collision(player_pos, enemy_pos):
     p_x = player_pos[0]
@@ -48,53 +47,96 @@ def detect_collision(player_pos, enemy_pos):
     return False
 
 
+# FUNCTION 2: MULTIPLYING ENEMIES
+def enemies_fall(enemy_list):
+    if len(enemy_list) < 10:
+        x_pos = random.randint(0, WIDTH - enemy_size)
+        y_pos = 0
+        enemy_list.append([x_pos, y_pos])
+
+
+# FUNCTION 3: MAKING NEW ENEMIES
+def create_enemies(enemy_list):
+    for enemy_pos in enemy_list:
+        pygame.draw.rect(screen, BLUE, (enemy_pos[0], enemy_pos[1], enemy_size, enemy_size))
+
+
+# FUNCTION 4: UPDATE ENEMY POSITIONS
+def update_enemy_pos(enemy_list):
+    for idx, enemy_pos in enumerate(enemy_list):
+        if 0 <= enemy_pos[1] < HEIGHT:
+            enemy_pos[1] += enemy_speed
+        else:
+            enemy_list.pop(idx)
+
+
+# FUNCTION 5: COLLISION CHECK
+def collision_check(enemy_list, player_pos):
+    for enemy_pos in enemy_list:
+        if detect_collision(enemy_pos, player_pos):
+            return True
+    return False
+
+
+# ~ END OF FUNCTIONS
+
+# OK SO WE DEVELOP OUR GAME UNDER A WHILE LOOP,
+# SO BASICALLY -WHILE- GAME = NOT OVER -> KEEP GAME RUNNING
+
 while not game_over:
     for event in pygame.event.get():
-        # WE WILL PUT ALL OUR EVENTS INSIDE THIS FOR LOOP
-
         # EVENT 1: QUIT EVENT (TO SMOOTHLY EXIT THE SCREEN)
         if event.type == pygame.QUIT:
             sys.exit()  # WE HAVE TO IMPORT THE SYSTEM LIBRARY FOR THIS. SEE: import [2] ABOVE
-        # BEFORE EVENT 2 WE'LL DRAW A SHAPE ON THE SCREEN. SEE COMMENT A1 BELOW
 
         # EVENT 2: MOVEMENT
         if event.type == pygame.KEYDOWN:
             x = player_pos[0]
             y = player_pos[1]
-
             if event.key == pygame.K_LEFT:
                 x -= player_size
             elif event.key == pygame.K_RIGHT:
                 x += player_size
             player_pos = [x, y]
-        # AFTER EVENT 2 WE'RE GONNA DECLARE ENEMY VARIABLES AND DRAW ENEMY SHAPE. SEE COMMENT A2 BELOW
+
     # CHANGE OUR BACKGROUND COLOR
     screen.fill(BG_COLOR)
 
-    # A1: OK NOW THAT WE HAVE OUR BASIC SCREEN WE WILL START DRAWING SHAPES AND EVENTUALLY MANIPULATE THEM
-    # FOR DRAWING SHAPES ON PYGAME FOLLOW: https://www.pygame.org/docs/ref/draw.html
+    # FOR DRAWING SHAPES ON PyGame I FOLLOWED: https://www.pygame.org/docs/ref/draw.html
+
     # drawing player
     pygame.draw.rect(screen, RED, (player_pos[0], player_pos[1], player_size, player_size))
+    # MAKING THE PLAYER MOVE ON EVENT 2 ABOVE
 
-    # A2: drawing enemy
-    # pygame.draw.circle(screen, BLUE, enemy_pos, 25)
-    pygame.draw.rect(screen, BLUE, (enemy_pos[0], enemy_pos[1], enemy_size, enemy_size))
-
-    # A3: MAKING ENEMY FALL - UPDATING ENEMY POSITION
-    if 0 <= enemy_pos[1] < HEIGHT:
-        enemy_pos[1] += enemy_speed
-        # at this point we have to set a frame rate to our game, see variable CLOCK and comment #FRAME RATE
-    else:
-        enemy_pos[1] = 0
-        enemy_pos[0] = random.randint(0, WIDTH - enemy_size)
-    # A4: START BUILDING COLLISION FUNCTION, SEE FUNCTION 1 ABOVE
-    # INITIATING FUNCTION 1
-    if detect_collision(player_pos, enemy_pos):
+    # UPDATING MULTIPLE ENEMY POSITION AND APPLYING THEIR COLLISION
+    enemies_fall(enemy_list)
+    update_enemy_pos(enemy_list)
+    if collision_check(enemy_list, player_pos):
         game_over = True
 
-    # FRAME RATE
+    # A2: drawing new enemy
+    # INITIALLY I USED: pygame.draw.rect(screen, BLUE, (enemy_pos[0], enemy_pos[1], enemy_size, enemy_size))
+    # BUT LATER MOVED IT INTO A FUNCTION ABOVE, SEE FUNCTION 3
+    create_enemies(enemy_list)
+
+    # ~ignore~
+    # A3: UPDATING ENEMY POSITION: CODE moved to FUNCTION 4
+    # if 0 <= enemy_pos[1] < HEIGHT:
+    #     enemy_pos[1] += enemy_speed
+    # else:
+    #     # enemy_list.pop(idx)
+    #     enemy_pos[1] = 0
+    #     enemy_pos[0] = random.randint(0, WIDTH - enemy_size)
+
+    # if detect_collision(player_pos, enemy_pos):
+    #     game_over = True
+    # ~ignore~
+
+    # SETTING FRAME RATE
     CLOCK.tick(120)
     # WE NEED TO UPDATE OUR SCREEN EVERY ITERATION
     pygame.display.update()
 
-## TODO: CREATE COLLISION METRICS, CREATE MORE ENEMIES
+# TODO: CREATE COLLISION METRICS, CREATE MORE ENEMIES
+# ~ignore~ CIRCLE SHAPE THAT MIGHT BE USEFUL LATER:
+# pygame.draw.circle(screen, BLUE, enemy_pos, 25) ~ ignore ~
