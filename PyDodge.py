@@ -20,9 +20,11 @@ player_size = 50
 player_pos = [(WIDTH / 2) - player_size, HEIGHT - (2 * player_size)]
 
 enemy_size = 50
-# we want enemy position to be random, so we use a library for that see IMPORT [3]
-enemy_position = [random.randint(0, WIDTH - enemy_size), 0]
+enemy_position = [random.randint(0, WIDTH - enemy_size), 0] # for random int, use library see IMPORT 3
 
+enemy_speed = 4
+
+CLOCK = pygame.time.Clock()
 # CREATE A SCREEN
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -31,6 +33,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # SO WE'RE GONNA HAVE A FOR LOOP INSIDE THE WHILE LOOP THAT WILL TRACK ALL OF OUR EVENTS
 
 game_over = False
+
+# FUNCTION 1: DETECTING COLLISION
 
 while not game_over:
     for event in pygame.event.get():
@@ -64,8 +68,18 @@ while not game_over:
     # pygame.draw.circle(screen, BLUE, enemy_position, 25)
     pygame.draw.rect(screen, BLUE, (enemy_position[0], enemy_position[1], enemy_size, enemy_size))
 
+    # A3: MAKING ENEMY FALL - UPDATING ENEMY POSITION
+    if 0 <= enemy_position[1] < HEIGHT:
+        enemy_position[1] += enemy_speed
+        # at this point we have to set a frame rate to our game, see variable CLOCK and comment #FRAME RATE
+    else:
+        enemy_position[1] = 0
+        enemy_position[0] = random.randint(0, WIDTH-enemy_size)
+    # A4: START BUILDING COLLISION FUNCTION, SEE FUNCTION 1 ABOVE
+
+    # FRAME RATE
+    CLOCK.tick(120)
     # WE NEED TO UPDATE OUR SCREEN EVERY ITERATION
     pygame.display.update()
 
-
-## TODO: MAKE ENEMY FALL, CREATE MORE ENEMIES
+## TODO: CREATE COLLISION METRICS, CREATE MORE ENEMIES
