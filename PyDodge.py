@@ -4,6 +4,7 @@
 import pygame
 import sys  # IMPORT [2] : SYSTEM
 import random  # IMPORT [3] : RANDOMIZE
+from pygame.locals import *
 
 # INITIATE PyGame
 pygame.init()
@@ -19,6 +20,7 @@ FNT_COLOR = 189, 113, 68  # 250, 152, 90
 
 player_size = 50
 player_pos = [(WIDTH / 2) - player_size, HEIGHT - (2 * player_size)]
+# player_speed =
 enemy_size = 50
 enemy_pos = [random.randint(0, WIDTH - enemy_size), 0]  # for random int, use library see IMPORT 3
 enemy_list = [enemy_pos]
@@ -30,8 +32,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 game_over = False
 score = 0
-pyFont = pygame.font.SysFont("Century Gothic", 35)
-pyFont2 = pygame.font.SysFont("Century Gothic", 15)
+# pyFont = pygame.font.SysFont("Century Gothic", 35)
+# pyFont2 = pygame.font.SysFont("Century Gothic", 15)
+
+pyFont = pygame.font.Font("AdventPro-Light.ttf", 40)
+pyFont2 = pygame.font.Font("AdventPro-Light.ttf", 20)
 
 
 # ~ END OF VARIABLES
@@ -124,11 +129,22 @@ while not game_over:
         if event.type == pygame.KEYDOWN:
             x = player_pos[0]
             y = player_pos[1]
+            #key_pressed = pygame.key.get_pressed()
+            # if key_pressed[pygame.K_RIGHT]:
+            #     print('askjdaksjdh')
+            #     if 0 <= x < WIDTH:
+            #         x += player_size
+            # if key_pressed[pygame.K_LEFT]:
+            #     print('askjdaksjdh')
+            #     if 0 <= x < WIDTH:
+            #         x += player_size
+
             if event.key == pygame.K_LEFT:
                 x -= player_size
             elif event.key == pygame.K_RIGHT:
                 x += player_size
             player_pos = [x, y]
+
 
     # CHANGE OUR BACKGROUND COLOR
     screen.fill(BG_COLOR)
@@ -144,18 +160,22 @@ while not game_over:
     score = update_enemy_pos(enemy_list, score)
     enemy_speed = set_level(score, enemy_speed)
 
+    # score text
     text = "Score: {}".format(score)
     label = pyFont.render(text, 1, FNT_COLOR)
-    screen.blit(label, (WIDTH - 193, HEIGHT - 52))
+    screen.blit(label, (WIDTH - 188, HEIGHT - 58))
 
+    # logo text
     text2 = "PyDodge"
     label2 = pyFont.render(text2, 1, FNT_COLOR)
-    screen.blit(label2, (40, HEIGHT - 52))
+    screen.blit(label2, (35, HEIGHT - 58))
 
+    # signature text
     text2 = "github.com/RyhanSunny"
     label2 = pyFont2.render(text2, 1, FNT_COLOR)
-    screen.blit(label2, (WIDTH / 2 - 85, HEIGHT - 31))
+    screen.blit(label2, (WIDTH / 2 - 95, HEIGHT - 42))
 
+    # initiating collision check
     if collision_check(enemy_list, player_pos):
         game_over = True
 
@@ -182,6 +202,7 @@ while not game_over:
     # WE NEED TO UPDATE OUR SCREEN EVERY ITERATION
     pygame.display.update()
 
-# TODO: CREATE COLLISION METRICS, CREATE MORE ENEMIES
-# ~ignore~ CIRCLE SHAPE THAT MIGHT BE USEFUL LATER:
+# TODO: press and hold move, off screen boundary/ jumping to the other side
+
+# ~ignore~ CIRCLE SHAPE THAT MIGHT BE USEFUL LATER: (needs anti-aliasing)
 # pygame.draw.circle(screen, BLUE, enemy_pos, 25) ~ ignore ~
