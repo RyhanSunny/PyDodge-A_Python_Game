@@ -18,8 +18,8 @@ BLUE = 63, 130, 153
 BG_COLOR = 244, 217, 187
 FNT_COLOR = 189, 113, 68  # 250, 152, 90
 
-player_size = 50
-player_pos = [(WIDTH / 2) - player_size, HEIGHT - (2 * player_size)]
+player_size = 45
+player_pos = [(WIDTH / 2) - player_size, HEIGHT - (2 * player_size+10)]
 # player_speed =
 enemy_size = 50
 enemy_pos = [random.randint(0, WIDTH - enemy_size), 0]  # for random int, use library see IMPORT 3
@@ -93,24 +93,8 @@ def collision_check(enemy_list, player_pos):
 
 # FUNCTION 6:
 def set_level(score, enemy_speed):
-    if score < 20:
-        enemy_speed = 4
-    elif score < 50:
-        enemy_speed = 5
-    elif score < 100:
-        enemy_speed = 6
-    elif score < 150:
-        enemy_speed = 7
-    elif score < 200:
-        enemy_speed = 7.5
-    elif score < 300:
-        enemy_speed = 8
-    elif score < 400:
-        enemy_speed = 9
-    elif score < 500:
-        enemy_speed = 10
-    else:
-        enemy_speed = 11
+    enemy_speed = (1/50)*score+3  # *USING LINEAR ALGEBRA TO FIND Y = MX + B
+    #  WHERE Y IS enemy_speed X IS score, M IS SLOPE AND B IS INTERCEPT
     return enemy_speed
 
 
@@ -129,15 +113,6 @@ while not game_over:
         if event.type == pygame.KEYDOWN:
             x = player_pos[0]
             y = player_pos[1]
-            #key_pressed = pygame.key.get_pressed()
-            # if key_pressed[pygame.K_RIGHT]:
-            #     print('askjdaksjdh')
-            #     if 0 <= x < WIDTH:
-            #         x += player_size
-            # if key_pressed[pygame.K_LEFT]:
-            #     print('askjdaksjdh')
-            #     if 0 <= x < WIDTH:
-            #         x += player_size
 
             if event.key == pygame.K_LEFT:
                 x -= player_size
