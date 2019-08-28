@@ -33,7 +33,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 game_over = False
 score = 0
 
-# SYSTEM FONTS IF ADVENTPRO-LIGHT NOT AVAILABLE
+# uncomment below code to use SYSTEM FONTS IF ADVENTPRO-LIGHT NOT AVAILABLE
 # pyFont = pygame.font.SysFont("Century Gothic", 35)
 # pyFont2 = pygame.font.SysFont("Century Gothic", 15)
 
