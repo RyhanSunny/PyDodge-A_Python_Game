@@ -39,6 +39,8 @@ score = 0
 
 pyFont = pygame.font.Font("AdventPro-Light.ttf", 40)
 pyFont2 = pygame.font.Font("AdventPro-Light.ttf", 20)
+pyFont3 = pygame.font.Font("AdventPro-Light.ttf", 80)
+
 
 
 # ~ END OF VARIABLES
@@ -152,8 +154,13 @@ while not game_over:
     label2 = pyFont2.render(text2, 1, FNT_COLOR)
     screen.blit(label2, (WIDTH / 2 - 95, HEIGHT - 42))
 
+    text3 = "GAME OVER!"
+    label3 = pyFont3.render(text3, 1, FNT_COLOR)
+
+
     # initiating collision check
     if collision_check(enemy_list, player_pos):
+        screen.blit(label3, (WIDTH / 2 - 190, HEIGHT - 350))
         game_over = True
 
     # A2: drawing new enemy
